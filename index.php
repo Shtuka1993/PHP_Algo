@@ -1,5 +1,43 @@
 <?php
-function bubleSort($arr, bool $order = true, &$iterations = 0) {
+
+/*
+* Constansts for storing strings with order definition
+*/
+const SORT_ORDER_ASC  = 'ASC';
+const SORT_ORDER_DESC = 'DESC';
+
+/**
+ * Transform order string into boolean default order - ASC
+ * Returns
+ * ASC -> true
+ * DESC -> false
+ * @param string order
+ * @return bool
+ */
+function checkOrder(string $order):bool {
+    switch($order) {
+        case SORT_ORDER_ASC:
+
+            return true;
+        case SORT_ORDER_ASC:
+
+            return false;
+        default:
+
+            return true;
+    }
+}
+
+/**
+ * Buble sort realisation
+ * Returns sorted array and change iteration count
+ * @param array arr
+ * @param string order
+ * @param int iterations 
+ * @return array
+ */
+function bubleSort(array $arr, string $order = SORT_ORDER_ASC, &$iterations = 0):array {
+    $isAscOrder = checkOrder($order);
     $iterations = 0;
     $lenght = count($arr);
     for($i = 0; $i < $lenght; $i++) {
@@ -12,18 +50,34 @@ function bubleSort($arr, bool $order = true, &$iterations = 0) {
             $iterations++;
         }
     }
+
     return $arr;
 }
+/**
+ * Replace values of two variables
+ */
 function replace ( &$a, &$b ) {
     $c = $a;
     $a = $b;
     $b = $c;
 }
-function quickSortIteration (&$arr, &$iterations, $leftIndex, $rightIndex, $order) {
+
+/**
+ * Transforms one sub array in a time
+ * Returns new index of pivot point after sorting sub array arround it 
+ * Updates iteration variable to
+ * @param array arr
+ * @param int iterations
+ * @param int leftIndex
+ * @param int rightIndex
+ * @param bool isAscOrder
+ * @return int
+ */
+function quickSortIteration (array &$arr, &$iterations, int $leftIndex, int $rightIndex, bool $isAscOrder):int {
     $pivotPoint = $arr[$rightIndex];
     $i = ($leftIndex - 1);
     for ($j = $leftIndex; $j <= $rightIndex- 1; $j++) {
-        if (($arr[$j] > $pivotPoint) != $order) {
+        if (($arr[$j] > $pivotPoint) != $isAscOrder) {
             $i++;
             replace ($arr[$i], $arr[$j]);
             $iterations++;
@@ -31,12 +85,24 @@ function quickSortIteration (&$arr, &$iterations, $leftIndex, $rightIndex, $orde
     }
     replace ($arr[$i + 1], $arr[$rightIndex]);
     $iterations++;
+
     return ($i + 1);
 }
-function quickSort ($arr, $order = true, &$iterations = 0) {
+
+/**
+ * Quick sort realisation iterative
+ * Returns sorted array and change iteration count
+ * @param array arr
+ * @param string order
+ * @param int iterations
+ * @return array
+ */
+function quickSort (array $arr, string $order = SORT_ORDER_ASC, &$iterations = 0):array {
+    $isAscOrder = checkOrder($order);
     $iterations=0;
     $lenght = count($arr);
     if($lenght == 0) {
+
         return $arr;
     }
     $indexesStack = [0, $lenght - 1];
@@ -45,7 +111,7 @@ function quickSort ($arr, $order = true, &$iterations = 0) {
     while ( $top >= 0 ) {
         $rightIndex = $indexesStack[ $top-- ];
         $leftIndex = $indexesStack[ $top-- ];
-        $pivot = quickSortIteration( $arr, $iterations, $leftIndex, $rightIndex, $order );
+        $pivot = quickSortIteration( $arr, $iterations, $leftIndex, $rightIndex, $isAscOrder);
         if ( $pivot-1 > $leftIndex ) {
             $indexesStack[ ++$top ] = $leftIndex;
             $indexesStack[ ++$top ] = $pivot - 1;
@@ -55,10 +121,10 @@ function quickSort ($arr, $order = true, &$iterations = 0) {
             $indexesStack[ ++$top ] = $rightIndex;
         }
     }
+
     return $arr;
 }
-const SORT_ORDER_ASC  = 'ASC';
-const SORT_ORDER_DESC = 'DESC';
+
 /**
  * @param array $array
  * @return string
